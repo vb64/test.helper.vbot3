@@ -3,4 +3,4 @@
 venv*
 build/*
 dist/*
-tester_vbot3.egg-info/*
+test_helper_vbot3.egg-info/*
