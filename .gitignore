@@ -1,0 +1,6 @@
+*.pyc
+*.log
+venv*
+build/*
+dist/*
+tester_vbot3.egg-info/*
