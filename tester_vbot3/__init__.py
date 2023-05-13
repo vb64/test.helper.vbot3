@@ -37,15 +37,19 @@ def start_command_dflt(message, bot):
 class Vbot3Tester(TestFlask, TestGae3, Telemulator):
     """Tester for Vbot3."""
 
-    def set_up(self, flask_app, vbot3, bot_name, bot_username, queue_yaml_dir, start_command_cust=None):
+    teleuser = None
+    private = None
+    group = None
+
+    def init(self, flask_app, vbot3, bot_name, bot_username, queue_yaml_dir, start_command_cust=None):
         """Init tests stuff."""
         TestFlask.set_up(self, flask_app)
         TestGae3.set_up(self, queue_yaml_dir)
         self.set_tested_bot(vbot3, name=bot_name, username=bot_username)
 
         start_command = start_command_cust or start_command_dflt
-        bot.private_command('start')(lambda msg: start_command(msg, bot))
-        bot.set_default_content_handlers()  # must be last in handlers chain
+        vbot3.private_command('start')(lambda msg: start_command(msg, vbot3))
+        vbot3.set_default_content_handlers()  # must be last in handlers chain
 
         self.teleuser = self.api.create_user('Test', 'User', language_code='en')
         self.private = self.teleuser.private()

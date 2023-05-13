@@ -7,7 +7,7 @@ else
 PYTHON = ./venv/bin/python
 endif
 
-SOURCE = test_helper_gae3
+SOURCE = tester_vbot3
 PIP = $(PYTHON) -m pip install
 PYLINT = $(PYTHON) -m pylint
 FLAKE8 = $(PYTHON) -m flake8
