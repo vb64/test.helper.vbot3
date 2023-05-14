@@ -1,0 +1,2 @@
+recursive-include tester_vbot3 *
+global-exclude *.py[cod]
