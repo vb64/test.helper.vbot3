@@ -1,4 +1,9 @@
+14.05.2023 ver.1.1
+------------------
+
+* Remove register and call bot command /start from init method.
+
 14.05.2023 ver.1.0
 ------------------
 
-+ Tester for Vbot3
++ Tester for Vbot3.
