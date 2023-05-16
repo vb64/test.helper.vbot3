@@ -1,5 +1,6 @@
 """Vbot3 tester."""
 from telemulator3 import Telemulator, private_command, private_text
+from telemulator3.update.message import Text, Command
 from tester_flask import TestFlask
 from test_helper_gae3 import TestGae3
 
@@ -34,6 +35,8 @@ class Vbot3Tester(TestFlask, TestGae3, Telemulator):
     teleuser = None
     private = None
     group = None
+    tele_message = None
+    group_message = None
 
     def init(self, flask_app, vbot3, bot_name, bot_username, queue_yaml_dir):
         """Init tests stuff."""
@@ -44,11 +47,29 @@ class Vbot3Tester(TestFlask, TestGae3, Telemulator):
         self.teleuser = self.api.create_user('Test', 'User', language_code='en')
         self.private = self.teleuser.private()
         self.group = self.teleuser.create_group("Test group")
+        self.tele_message = Text(self.private, self.teleuser, "Hello private!")
+        self.group_message = Text(self.group, self.teleuser, "Hello group!")
 
     def tearDown(self):
         """Clear tests."""
         TestGae3.tear_down(self)
         super().tearDown()
+
+    def send2chat(self, chat, message):
+        """Send message to given chat."""
+        with self.app.test_request_context():
+            return chat.send(message)
+
+    def send_command(self, chat, command, from_user=None, **kwargs):
+        """Send command to given chat."""
+        from_user = from_user or self.teleuser
+        return self.send2chat(chat, Command(chat, from_user, command, **kwargs))
+
+    def tg_button(self, row, index=0, chat=None, user=None):
+        """Send custom keyboard item to chat."""
+        chat = chat or self.private
+        user = user or self.teleuser
+        chat.keyboard.menu_item(user, index, row=row)
 
     def private_command(self, cmd, from_user=None):
         """Call private command."""
