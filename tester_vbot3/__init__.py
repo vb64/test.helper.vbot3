@@ -1,6 +1,6 @@
 """Vbot3 tester."""
-from telemulator3 import Telemulator, private_command, private_text
-from telemulator3.update.message import Text, Command
+from telemulator3 import Telemulator, private_command, private_text, private_document, send_text
+from telemulator3.update.message import Text, Command, Contact
 from tester_flask import TestFlask
 from test_helper_gae3 import TestGae3
 
@@ -65,6 +65,21 @@ class Vbot3Tester(TestFlask, TestGae3, Telemulator):
         from_user = from_user or self.teleuser
         return self.send2chat(chat, Command(chat, from_user, command, **kwargs))
 
+    def send_contact(  # pylint: disable=too-many-arguments
+      self, chat, phone_number, from_user=None, first_name='Contact', last_name='User', user_id=777, **kwargs
+    ):
+        """Send contact to given chat."""
+        from_user = from_user or self.teleuser
+        return self.send2chat(
+          chat,
+          Contact(chat, from_user, phone_number, first_name, last_name, user_id, **kwargs)
+        )
+
+    def send_text(self, chat, text, from_user=None):
+        """Send text to chat and return sended message."""
+        from_user = from_user or self.teleuser
+        return send_text(chat, text, from_user)
+
     def tg_button(self, row, index=0, chat=None, user=None):
         """Send custom keyboard item to chat."""
         chat = chat or self.private
@@ -82,6 +97,22 @@ class Vbot3Tester(TestFlask, TestGae3, Telemulator):
         from_user = from_user or self.teleuser
         with self.app.test_request_context():
             private_text(text, from_user)
+
+    def private_document(self, file_name, from_user=None, file_size=600):
+        """Call private command."""
+        from_user = from_user or self.teleuser
+        with self.app.test_request_context():
+            private_document(file_name, from_user=from_user, file_size=file_size)
+
+    def private_contact(  # pylint: disable=too-many-arguments
+      self, phone_number, from_user=None, first_name='Contact', last_name='User', user_id=777, **kwargs
+    ):
+        """Send contact to private chat."""
+        from_user = from_user or self.teleuser
+        return self.send_contact(
+          from_user.private(), phone_number, from_user=from_user,
+          first_name=first_name, last_name=last_name, user_id=user_id, **kwargs
+        )
 
     def assert_in_history(self, substring, chat=None):
         """Check substring in the history of given chat."""
