@@ -1,3 +1,5 @@
++ Add helpers for document and contact.
+
 27.05.2023 ver.1.4
 ------------------
 
